@@ -12,11 +12,11 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _name;
   final _nameController = TextEditingController();
 
-  // Fetch user details (email and name)
+  // get, or fetch, user details (email and name)
   Future<void> _fetchUserDetails() async {
     final db = await DatabaseHelper().database;
 
-    // Get the email from the loginstatus table
+    // email from the loginstatus table
     final loginResult = await db.query(
       'loginstatus',
       columns: ['email'],
@@ -26,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (loginResult.isNotEmpty) {
       final email = loginResult.first['email'] as String?;
 
-      // If email exists, use it to fetch user details from students table
+      // if email exists, fetch user details from students table
       if (email != null) {
         final studentResult = await db.query(
           'students',
@@ -40,37 +40,35 @@ class _ProfilePageState extends State<ProfilePage> {
           setState(() {
             _email = studentResult.first['email'] as String?;
             _name = studentResult.first['name'] as String?;
-            _nameController.text = _name ?? ''; // Set name in the TextFormField
+            _nameController.text = _name ?? ''; // set name in the TextFormField, but feels odd
           });
         }
       }
     }
   }
 
-  // Update the name in the database
+  // update the name in the database
   Future<void> _updateName() async {
     final db = await DatabaseHelper().database;
     
-    // Update the name in the students table
     await db.update(
       'students',
-      {'name': _nameController.text}, // New name from the controller
+      {'name': _nameController.text},
       where: 'email = ?',
-      whereArgs: [_email], // Using the email to identify the student
+      whereArgs: [_email],
     );
 
-    // Update the state with the new name
     setState(() {
       _name = _nameController.text;
     });
 
-    // Show confirmation message
+    // show confirmation message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Name updated successfully!')),
     );
   }
 
-  // Logout and clear the loginstatus table
+  // logout and clear the loginstatus table
   Future<void> _logout() async {
     final db = await DatabaseHelper().database;
 
@@ -92,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(title: Text('Profile')),
       body: _email == null || _name == null
-          ? Center(child: CircularProgressIndicator()) // Show loading if not yet fetched
+          ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -119,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: _updateName,
                     child: Text('Update Name'),
                     style: ElevatedButton.styleFrom(
-                      iconColor: Colors.green, // Button color
+                      iconColor: Colors.green,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -127,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: _logout,
                     child: Text('Logout'),
                     style: ElevatedButton.styleFrom(
-                      iconColor: Colors.red, // Button color
+                      iconColor: Colors.red,
                     ),
                   ),
                 ],

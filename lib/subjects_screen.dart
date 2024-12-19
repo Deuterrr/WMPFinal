@@ -51,7 +51,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
       return;
     }
 
-    // Check total credits
+    // check total credits
     final totalCredits = await DatabaseHelper().getTotalCredits(_loggedInStudentId!);
 
     if (totalCredits + subjectCredit > maxCredits) {
@@ -64,7 +64,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
       return;
     }
 
-    // Insert enrollment
+    // insert enrollment
     await db.insert('enrollments', {
       'student_id': _loggedInStudentId,
       'subject_id': subjectId,
@@ -84,7 +84,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     _loadLoggedInStudentId();
   }
 
-  // Load the logged-in student ID asynchronously
+  // load the logged-in student ID asynchronously
   Future<void> _loadLoggedInStudentId() async {
     String? email = await getEmailfromLoginStatus();
     setState(() {
@@ -146,41 +146,45 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: _subjects.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : DataTable(
-                columns: [
-                  DataColumn(label: Text('ID')),
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Credit')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: _subjects.map(
-                  (subject) => DataRow(cells: [
-                    DataCell(Text(subject['id'].toString())),
-                    DataCell(Text(subject['name'])),
-                    DataCell(Text(subject['description'])),
-                    DataCell(Text(subject['credit'].toString())),
-                    DataCell(
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_loggedInStudentId != null) {
-                            _enrollInSubject(subject['id'], subject['credit']);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('You need to log in first')),
-                            );
-                          }
-                        },
-                        child: Text('Enroll'),
+        scrollDirection: Axis.vertical,
+        child: 
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: _subjects.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : DataTable(
+                  columns: [
+                    DataColumn(label: Text('ID')),
+                    DataColumn(label: Text('Name')),
+                    DataColumn(label: Text('Description')),
+                    DataColumn(label: Text('Credit')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: _subjects.map(
+                    (subject) => DataRow(cells: [
+                      DataCell(Text(subject['id'].toString())),
+                      DataCell(Text(subject['name'])),
+                      DataCell(Text(subject['description'])),
+                      DataCell(Text(subject['credit'].toString())),
+                      DataCell(
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_loggedInStudentId != null) {
+                              _enrollInSubject(subject['id'], subject['credit']);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('You need to log in first')),
+                              );
+                            }
+                          },
+                          child: Text('Enroll'),
+                        ),
                       ),
-                    ),
-                  ]),
-                ).toList(),
-              ),
-      ),
+                    ]),
+                  ).toList(),
+                ),
+        ),
+      )
     );
   }
 }

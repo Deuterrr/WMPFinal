@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'database_helper.dart';
 
 class MyEnrollmentPage extends StatefulWidget {
-  final String studentId; // Email or student ID
+  final String studentId; // email or student Id
 
   MyEnrollmentPage({required this.studentId});
 
@@ -39,20 +39,28 @@ class _MyEnrollmentPageState extends State<MyEnrollmentPage> {
       appBar: AppBar(title: Text("My Enrollment")),
       body: _enrolledSubjects.isEmpty
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _enrolledSubjects.length,
-              itemBuilder: (context, index) {
-                final subject = _enrolledSubjects[index];
-                return Card(
-                  margin: EdgeInsets.all(8),
-                  child: ListTile(
-                    title: Text(subject['name']),
-                    subtitle: Text(subject['description']),
-                    trailing: Text('${subject['credit']} Credits'),
-                    isThreeLine: true,
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _enrolledSubjects.length,
+                    itemBuilder: (context, index) {
+                      final subject = _enrolledSubjects[index];
+                      return Card(
+                        margin: EdgeInsets.all(8),
+                        child: ListTile(
+                          title: Text(subject['name']),
+                          subtitle: Text(subject['description']),
+                          trailing: Text('${subject['credit']} Credits'),
+                          isThreeLine: true,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ],
+              ),
             ),
     );
   }

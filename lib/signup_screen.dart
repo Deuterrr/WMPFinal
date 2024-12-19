@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           {'name': name,'email': email, 'password': password},
         );
 
-        Navigator.pop(context); // Go back to login page
+        Navigator.pop(context);
       }
     }
   }
@@ -100,7 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Navigate back to the login page
+                  Navigator.pop(context);
                 },
                 child: Text('Back to Login'),
               ),

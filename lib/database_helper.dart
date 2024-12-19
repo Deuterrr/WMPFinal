@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -25,41 +23,11 @@ class DatabaseHelper {
 
     print("Database path: $path");
 
-    bool dbExists = await File(path).exists();
-    if (dbExists) {
-      print("Database exists at $path");
-    } else {
-      insertTestStudent();
-    }
     return await openDatabase(
       path,
       version: 1,
       onCreate: _onCreate,
     );
-  }
-
-  Future<void> insertTestStudent() async {
-    final db = await DatabaseHelper().database;
-
-    await db.insert('subjects', {'name': 'Math 101', 'description': 'Basic Mathematics', 'credit': 3});
-    await db.insert('subjects', {'name': 'Math 102', 'description': 'Calculus I', 'credit': 3});
-    await db.insert('subjects', {'name': 'Math 103', 'description': 'Calculus II', 'credit': 3});
-    await db.insert('subjects', {'name': 'Math 104', 'description': 'Statistics', 'credit': 3});
-    await db.insert('subjects', {'name': 'Math 105', 'description': 'Linear Algebra', 'credit': 3});
-    await db.insert('subjects', {'name': 'Physics 101', 'description': 'Introduction to Physics', 'credit': 3});
-    await db.insert('subjects', {'name': 'Physics 102', 'description': 'Thermodynamics I', 'credit': 3});
-    await db.insert('subjects', {'name': 'Physics 103', 'description': 'Classical Mechanics', 'credit': 3});
-    await db.insert('subjects', {'name': 'Chemistry 101', 'description': 'Basics of Chemistry', 'credit': 3});
-    await db.insert('subjects', {'name': 'Comp-Sci 104', 'description': 'Database', 'credit': 3});
-    await db.insert('subjects', {'name': 'Comp-Sci 103', 'description': 'Software Engineering', 'credit': 3});
-    await db.insert('subjects', {'name': 'Comp-Sci 101', 'description': 'Android App Development', 'credit': 5});
-    await db.insert('subjects', {'name': 'Comp-Sci 102', 'description': 'Computer Architecture', 'credit': 3});
-
-    await db.insert('students', {
-      'name': 'Test Student',
-      'email': 'test@student.com',
-      'password': '123456',
-    });
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -97,6 +65,31 @@ class DatabaseHelper {
         FOREIGN KEY (subject_id) REFERENCES subjects (id)
       )
     ''');
+
+    await _insertInitialData(db);
+  }
+
+  Future<void> _insertInitialData(Database db) async {
+    // insert subjects
+    await db.insert('subjects', {'name': 'Math 101', 'description': 'Basic Mathematics', 'credit': 3});
+    await db.insert('subjects', {'name': 'Math 102', 'description': 'Calculus I', 'credit': 3});
+    await db.insert('subjects', {'name': 'Math 103', 'description': 'Calculus II', 'credit': 3});
+    await db.insert('subjects', {'name': 'Math 104', 'description': 'Statistics', 'credit': 3});
+    await db.insert('subjects', {'name': 'Math 105', 'description': 'Linear Algebra', 'credit': 3});
+    await db.insert('subjects', {'name': 'Physics 101', 'description': 'Introduction to Physics', 'credit': 3});
+    await db.insert('subjects', {'name': 'Physics 102', 'description': 'Thermodynamics I', 'credit': 3});
+    await db.insert('subjects', {'name': 'Physics 103', 'description': 'Classical Mechanics', 'credit': 3});
+    await db.insert('subjects', {'name': 'Chemistry 101', 'description': 'Basics of Chemistry', 'credit': 3});
+    await db.insert('subjects', {'name': 'Comp-Sci 104', 'description': 'Database', 'credit': 3});
+    await db.insert('subjects', {'name': 'Comp-Sci 103', 'description': 'Software Engineering', 'credit': 3});
+    await db.insert('subjects', {'name': 'Comp-Sci 101', 'description': 'Android App Development', 'credit': 5});
+    await db.insert('subjects', {'name': 'Comp-Sci 102', 'description': 'Computer Architecture', 'credit': 3});
+
+    await db.insert('students', {
+      'name': 'Test Student',
+      'email': 'test@student.com',
+      'password': '123456',
+    });
   }
 
   Future<int> getTotalCredits(String studentEmail) async {
@@ -108,7 +101,6 @@ class DatabaseHelper {
       WHERE enrollments.student_id = ?
     ''', [studentEmail]);
 
-    // Safely extract the value and return 0 if it's null
     final totalCredits = result.isNotEmpty ? result.first['total_credits'] as int? : null;
     return totalCredits ?? 0;
   }
