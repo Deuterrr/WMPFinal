@@ -96,7 +96,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Package Enrollment'),
+      appBar: CustomAppBar(title: 'Subject Enrollment'),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
